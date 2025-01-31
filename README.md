@@ -91,16 +91,24 @@ composer require laravel/sail --dev
 ./vendor/bin/sail up # Comando en Linux
 
 # Comprobamos que nuestro entorno pille Laravel
-http://localhost y se tendrá que ver algo así:
+http://localhost
 
-# En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
 
+```
+### Si todo ha salido correctamente cuando entras a localhost se te deberia ver asi
+![image](https://github.com/user-attachments/assets/dff7f455-96d4-4d0f-8241-58fc351ab63b)
+
+### En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
+
+```
 # Para detener el servicio
 ./vendor/bin/sail stop
 
 # Puedes crear un alias si no quieres estar poniendo todo el rato ./vendor/bin/sail
 alias sail="./vendor/bin/sail"
 ```
+
+
 
 # Laravel Breeze
 
