@@ -90,11 +90,8 @@ composer require laravel/sail --dev
 # Tras finalizar el proceso de instalación, y tras asegurarnos de tener abierto Docker, lanzamos nuestra herramienta con el siguiente comando
 ./vendor/bin/sail up # Comando en Linux
 
-![alt text](image-1.png)
-
 # Comprobamos que nuestro entorno pille Laravel
 http://localhost y se tendrá que ver algo así:
-![alt text](image.png)
 
 # En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
 
