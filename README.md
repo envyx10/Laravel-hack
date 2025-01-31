@@ -140,6 +140,13 @@ DB_PORT=3306
 DB_DATABASE=laravel  # Ponemos el nombre que queramos a nuestra BD
 DB_USERNAME=sail     # Ponemos el nombre que queramos a nuestro usuario
 DB_PASSWORD=password # Ponemos la contraseña que queramos a nuestra BD
+
+# Modificamos el valor de SESSION_DRIVER A file
+SESSION_DRIVER=file # Modificar este valor a este
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
 ```
 
 # Faker
