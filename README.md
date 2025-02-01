@@ -1,5 +1,9 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+# Instalación de Laravel
+
+Pasos a seguir en orden.
+
 ## Índice
 
 1. [WSL](#wsl)
@@ -10,13 +14,16 @@
 6. [Laravel Breeze](#laravel-breeze)
 7. [Configuración del archivo .env](#configuración-del-archivo-env)
 8. [Faker](#faker)
+9. [Base de datos](#base-de-datos)
+10. [Relaciones](#relaciones)
+11. [Modelos](#modelos)
+12. [Métodos modelos](#métodos-modelos)
 
 ## WSL
 
 Antes de nada, si no tenemos instalado WSL, tendremos que instalarlo con:
 
 ```sh
-# Instalamos WSL
 wsl --install
 ```
 
@@ -135,18 +142,16 @@ composer require laravel/sail --dev
 ```
 
 ```sh
-# Tras finalizar el proceso de instalación, y tras asegurarnos de tener abierto Docker,
-# lanzamos nuestra herramienta con el siguiente comando
+# Tras finalizar el proceso de instalación, y tras asegurarnos de tener abierto Docker, lanzamos nuestra herramienta con el siguiente comando
 ./vendor/bin/sail up # Comando en Linux
 ```
+
 
 ```sh
 # Comprobamos que nuestro entorno pille Laravel
 http://localhost y se tendrá que ver algo así:
 ```
-
-![laravelHow](https://github.com/user-attachments/assets/3fea09fd-4178-493a-aff7-bf50ae4a5db0)
-
+![laravelHow](https://github.com/user-attachments/assets/4c850321-df2f-47f7-afd9-09b4d45e7dce)
 
 ```sh
 # En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
@@ -177,9 +182,13 @@ php artisan breeze:install
 ```sh
 # Nos aparecerán varias opciones
 # Elegimos: Blade with Alpine (FRAMEWORK JS orientado a componentes)
+```
 
+```sh
 # Nos preguntará si queremos modo oscuro o no (Opcional)
+```
 
+```sh
 # Seguidamente nos preguntará por la librería que queremos utilizar para el testing
 # Elegimos: PHPUnit
 ```
@@ -261,4 +270,221 @@ fake()->boolean: Genera un valor booleano aleatorio (verdadero o falso).
 fake()->randomElement: Selecciona un elemento aleatorio de un array que le proporciones.
 fake()->randomKey: Selecciona una clave aleatoria de un array asociativo.
 fake()->imageUrl: Genera una URL de imagen falsa.
+```
+
+## Base de datos
+
+```sh
+# Migraciones: Crea la estructura de BD
+artisan make:migration create_nombre_table (debe mantener esta nomenclatura)
+artisan migrate
+
+# Importante, tienen que ser en orden, si una tabla depende de la otra puede darnos fallos, hay que tener cuidado
+```
+
+```sh
+# Semilleros: Sirve para poblar la BD con datos prefijados durante el desarrollo
+artisan make:seeder nombretablaTableSeeder
+artisan db:seed
+```
+
+```sh
+# Factorias: Sirve para poblar la BD de forma masiva con datos aleatorios utilizando Faker
+artisan make:factory nombreTablaFactory
+artisan db:seed
+```
+
+```sh
+# DatabaseSeeder.php: Factorias y semilleros que queremos ejecutar (Tanto semilleros como factorias dependen de esto)
+```
+
+## Relaciones
+
+### Relaciones 1:1
+
+- `A` to `B` -> `hasOne`
+- `B` to `A` -> `belongsTo`
+
+### Relaciones 1:N
+
+- `A` to `B` -> `hasMany`
+- `B` to `A` -> `belongsTo`
+
+### Relaciones N:N
+
+- `A` to `B` -> `belongsToMany`
+- `B` to `A` -> `belongsToMany`
+- `AB` tabla pivote -> `belongsToMany`
+  - El resultado contiene un objeto tipo `pivot`
+
+### Ejemplos
+
+#### Relación 1:1
+
+```php
+// En el modelo A
+public function b()
+{
+    return $this->hasOne(B::class);
+}
+
+// En el modelo B
+public function a()
+{
+    return $this->belongsTo(A::class);
+}
+```
+
+#### Relación 1:N
+
+```php
+// En el modelo A
+public function bs()
+{
+    return $this->hasMany(B::class);
+}
+
+// En el modelo B
+public function a()
+{
+    return $this->belongsTo(A::class);
+}
+```
+
+#### Relación N:N
+
+```php
+// En el modelo A
+public function bs()
+{
+    return $this->belongsToMany(B::class);
+}
+
+// En el modelo B
+public function as()
+{
+    return $this->belongsToMany(A::class);
+}
+```
+
+## Modelos
+
+Importante, si usamos factorias debemos añadir el trait `HasFactory`.
+
+```php
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class User extends Model
+{
+    use HasFactory;
+
+    // Nombre de la tabla asociada al modelo
+    protected $table = 'users';
+
+    // Clave primaria de la tabla
+    protected $primaryKey = 'id';
+
+    // Indica si el modelo debe gestionar las marcas de tiempo (created_at, updated_at)
+    public $timestamps = true;
+
+    // Atributos que se pueden asignar masivamente
+    protected $fillable = ['name', 'email', 'password'];
+
+    // Atributos que no se pueden asignar masivamente
+    protected $guarded = ['id'];
+
+    // Atributos que deben estar ocultos en las representaciones JSON
+    protected $hidden = ['password', 'remember_token'];
+
+    // Ejemplo de una relación 1:N
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+}
+```
+
+### Atributos
+
+- `protected $table`: Nombre de la tabla asociada al modelo.
+  ```php
+  protected $table = 'users';
+  ```
+
+- `protected $primaryKey`: Clave primaria de la tabla.
+  ```php
+  protected $primaryKey = 'id';
+  ```
+
+- `public $timestamps`: Indica si el modelo debe gestionar las marcas de tiempo (created_at, updated_at).
+  ```php
+  public $timestamps = true;
+  ```
+
+- `protected $fillable`: Atributos que se pueden asignar masivamente.
+  ```php
+  protected $fillable = ['name', 'email', 'password'];
+  ```
+
+- `protected $guarded`: Atributos que no se pueden asignar masivamente.
+  ```php
+  protected $guarded = ['id'];
+  ```
+
+- `protected $hidden`: Atributos que deben estar ocultos en las representaciones JSON.
+  ```php
+  protected $hidden = ['password', 'remember_token'];
+  ```
+
+### Métodos
+
+- `public function posts()`: Ejemplo de una relación 1:N.
+  ```php
+  public function posts()
+  {
+      return $this->hasMany(Post::class);
+  }
+  ```
+
+## Métodos modelos
+
+```sh
+# create([]): Crea un nuevo registro en la base de datos con los atributos proporcionados.
+User::create(['name' => 'John Doe', 'email' => 'john@example.com']);
+```
+
+```sh
+# getResults(): Obtiene los resultados de una consulta.
+$users = User::where('active', 1)->getResults();
+```
+
+```sh
+# first(): Obtiene el primer registro de una consulta.
+$user = User::where('email', 'john@example.com')->first();
+```
+
+```sh
+# get([]): Obtiene una colección de registros que coinciden con los criterios de la consulta.
+$users = User::where('active', 1)->get();
+```
+
+```sh
+# find(primaryKey): Encuentra un registro por su clave primaria.
+$user = User::find(1);
+```
+
+```sh
+# all(): Obtiene todos los registros de la tabla.
+$users = User::all();
+```
+
+```sh
+# attach(): Asocia un modelo con otro en una relación de muchos a muchos.
+$user->roles()->attach($roleId);
+```
+
+```sh
+# detach(): Desasocia un modelo de otro en una relación de muchos a muchos.
+$user->roles()->detach($roleId);
 ```
