@@ -1,5 +1,3 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 # Instalación de Laravel
 
 Pasos a seguir en orden.
@@ -151,7 +149,9 @@ composer require laravel/sail --dev
 # Comprobamos que nuestro entorno pille Laravel
 http://localhost y se tendrá que ver algo así:
 ```
-![laravelHow](https://github.com/user-attachments/assets/4c850321-df2f-47f7-afd9-09b4d45e7dce)
+
+![laravelHow](https://github.com/user-attachments/assets/2e8dd0fe-d081-4c7d-84d8-d80055450936)
+
 
 ```sh
 # En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
@@ -274,28 +274,150 @@ fake()->imageUrl: Genera una URL de imagen falsa.
 
 ## Base de datos
 
+### Migraciones
+
+Las migraciones son una herramienta en Laravel que permite crear y modificar la estructura de la base de datos de manera controlada y versionada. Son especialmente útiles para mantener la consistencia de la base de datos a lo largo del desarrollo y las actualizaciones.
+
+#### Crear una migración
+
 ```sh
-# Migraciones: Crea la estructura de BD
+# Crear una nueva migración
 artisan make:migration create_nombre_table (debe mantener esta nomenclatura)
+```
+
+#### Ejecutar migraciones
+
+```sh
+# Ejecutar todas las migraciones pendientes
 artisan migrate
-
-# Importante, tienen que ser en orden, si una tabla depende de la otra puede darnos fallos, hay que tener cuidado
 ```
 
+#### Ejemplo de migración
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateUsersTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+}
+```
+
+### Semilleros
+
+Los seeders (semilleros) son una herramienta en Laravel que permite poblar la base de datos con datos de prueba. Son especialmente útiles durante el desarrollo y las pruebas, ya que permiten llenar la base de datos con datos consistentes y predecibles.
+
+#### Crear un seeder
+
 ```sh
-# Semilleros: Sirve para poblar la BD con datos prefijados durante el desarrollo
+# Crear un nuevo seeder
 artisan make:seeder nombretablaTableSeeder
+```
+
+#### Ejecutar seeders
+
+```sh
+# Ejecutar todos los seeders
 artisan db:seed
 ```
 
+#### Ejemplo de Seeder
+
+```php
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class UsersTableSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('users')->insert([
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => Hash::make('password'),
+        ]);
+    }
+}
+```
+
+### Factorías
+
+Las factorías son una herramienta en Laravel que permite crear modelos de manera masiva con datos aleatorios utilizando Faker. Son especialmente útiles para poblar la base de datos con datos de prueba durante el desarrollo y las pruebas.
+
+#### Crear una factoría
+
 ```sh
-# Factorias: Sirve para poblar la BD de forma masiva con datos aleatorios utilizando Faker
+# Crear una nueva factoría
 artisan make:factory nombreTablaFactory
+```
+
+#### Ejecutar factorías
+
+```sh
+# Ejecutar las factorías
 artisan db:seed
 ```
 
-```sh
-# DatabaseSeeder.php: Factorias y semilleros que queremos ejecutar (Tanto semilleros como factorias dependen de esto)
+#### Ejemplo de Factoría
+
+```php
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+class UserFactory extends Factory
+{
+    protected $model = User::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'), // password
+            'remember_token' => Str::random(10),
+        ];
+    }
+}
+```
+
+### DatabaseSeeder.php
+
+El archivo `DatabaseSeeder.php` es el punto de entrada para ejecutar todos los seeders y factorías que queremos ejecutar. Tanto los seeders como las factorías dependen de este archivo para ser ejecutados.
+
+#### Ejemplo de DatabaseSeeder.php
+
+```php
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run()
+    {
+        $this->call([
+            UsersTableSeeder::class,
+            // Añadir otros seeders aquí
+        ]);
+    }
+}
 ```
 
 ## Relaciones
@@ -369,7 +491,7 @@ public function as()
 
 ## Modelos
 
-Importante, si usamos factorias debemos añadir el trait `HasFactory`.
+Importante, si usamos factorías debemos añadir el trait `HasFactory`.
 
 ```php
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -440,7 +562,6 @@ class User extends Model
 ### Métodos
 
 - `public function posts()`: Ejemplo de una relación 1:N.
-  
   ```php
   public function posts()
   {
