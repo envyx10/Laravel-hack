@@ -294,6 +294,12 @@ artisan migrate
 
 #### Ejemplo de migración
 
+En la función up(), definimos la estructura de la tabla users. 
+Especificamos el nombre de la tabla y las columnas que contendrá, indicando su tipo de dato y propiedades.
+
+Cada columna se declara dentro del método table(), donde el primer argumento es el nombre de la columna y el segundo define su tipo. 
+También podemos agregar restricciones como claves primarias, valores predeterminados o marcas de tiempo.
+
 ```php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -323,7 +329,8 @@ class CreateUsersTable extends Migration
 
 ### Semilleros
 
-Los seeders (semilleros) son una herramienta en Laravel que permite poblar la base de datos con datos de prueba. Son especialmente útiles durante el desarrollo y las pruebas, ya que permiten llenar la base de datos con datos consistentes y predecibles.
+Los seeders (semilleros) son una herramienta en Laravel que permite poblar la base de datos con datos de prueba. 
+Son especialmente útiles durante el desarrollo y las pruebas, ya que permiten llenar la base de datos con datos consistentes y predecibles.
 
 #### Crear un seeder
 
@@ -360,7 +367,8 @@ class UsersTableSeeder extends Seeder
 
 ### Factorías
 
-Las factorías son una herramienta en Laravel que permite crear modelos de manera masiva con datos aleatorios utilizando Faker. Son especialmente útiles para poblar la base de datos con datos de prueba durante el desarrollo y las pruebas.
+Las factorías son una herramienta en Laravel que permite crear modelos de manera masiva con datos aleatorios utilizando Faker. 
+Son especialmente útiles para poblar la base de datos con datos de prueba durante el desarrollo y las pruebas.
 
 #### Crear una factoría
 
@@ -401,7 +409,8 @@ class UserFactory extends Factory
 
 ### DatabaseSeeder.php
 
-El archivo `DatabaseSeeder.php` es el punto de entrada para ejecutar todos los seeders y factorías que queremos ejecutar. Tanto los seeders como las factorías dependen de este archivo para ser ejecutados.
+El archivo `DatabaseSeeder.php` es el punto de entrada para ejecutar todos los seeders y factorías que queremos ejecutar. 
+Tanto los seeders como las factorías dependen de este archivo para ser ejecutados.
 
 #### Ejemplo de DatabaseSeeder.php
 
