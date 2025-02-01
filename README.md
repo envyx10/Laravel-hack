@@ -412,6 +412,9 @@ class UserFactory extends Factory
 El archivo `DatabaseSeeder.php` es el punto de entrada para ejecutar todos los seeders y factorías que queremos ejecutar. 
 Tanto los seeders como las factorías dependen de este archivo para ser ejecutados.
 
+Ejecutamos la inserción de datos utilizando factory(), donde el primer argumento es el modelo asociado a la tabla y el segundo define la cantidad de registros a generar.
+    Ejemplo: Usuario::factory(10)->create()
+    
 #### Ejemplo de DatabaseSeeder.php
 
 ```php
@@ -421,10 +424,20 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        $this->call([
-            UsersTableSeeder::class,
-            // Añadir otros seeders aquí
-        ]);
+
+        # Llamamos al seeder de Usuario
+        $this->call(UsuarioSeeder::class); 
+
+        # Creamos 10 usuarios con el factory
+        Usuario::factory(10)->create();
+
+        # Creamos 30 series con el factory
+        Serie::factory(30)->create(); 
+
+        # Creamos 30 valoraciones con el factory
+        Valoracion::factory(30)->create(); 
+   
+    }
     }
 }
 ```
