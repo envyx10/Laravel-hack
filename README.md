@@ -135,18 +135,18 @@ composer require laravel/sail --dev
 ```
 
 ```sh
-# Tras finalizar el proceso de instalación, y tras asegurarnos de tener abierto Docker, lanzamos nuestra herramienta con el siguiente comando
+# Tras finalizar el proceso de instalación, y tras asegurarnos de tener abierto Docker,
+# lanzamos nuestra herramienta con el siguiente comando
 ./vendor/bin/sail up # Comando en Linux
 ```
-
-![alt text](image-1.png)
 
 ```sh
 # Comprobamos que nuestro entorno pille Laravel
 http://localhost y se tendrá que ver algo así:
 ```
 
-![alt text](image.png)
+![laravelHow](https://github.com/user-attachments/assets/3fea09fd-4178-493a-aff7-bf50ae4a5db0)
+
 
 ```sh
 # En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
@@ -177,13 +177,9 @@ php artisan breeze:install
 ```sh
 # Nos aparecerán varias opciones
 # Elegimos: Blade with Alpine (FRAMEWORK JS orientado a componentes)
-```
 
-```sh
 # Nos preguntará si queremos modo oscuro o no (Opcional)
-```
 
-```sh
 # Seguidamente nos preguntará por la librería que queremos utilizar para el testing
 # Elegimos: PHPUnit
 ```
