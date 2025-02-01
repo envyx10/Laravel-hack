@@ -440,6 +440,7 @@ class User extends Model
 ### Métodos
 
 - `public function posts()`: Ejemplo de una relación 1:N.
+  
   ```php
   public function posts()
   {
