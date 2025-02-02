@@ -219,6 +219,16 @@ DB_USERNAME=sail     # Ponemos el nombre que queramos a nuestro usuario
 DB_PASSWORD=password # Ponemos la contraseña que queramos a nuestra BD
 ```
 
+```sh
+# Modificamos nombre especificado
+SESSION_DRIVER=database # Por defecto viene database, cambiar a file para que no de problemas
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+```
+
 ## Faker
 
 ```sh
