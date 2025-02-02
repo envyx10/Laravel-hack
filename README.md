@@ -160,9 +160,8 @@ Se arregla modificando los valores de .env que se especifican algo mas abajo de 
 
 
 ```sh
-# En caso de que no se vea así, habrá que parar Apache2 mediante
+# En caso de que no se vea así de ninguna de las maneras de las de arriba y se vea apache2, habrá que parar Apache2 mediante:
 systemctl stop apache2
-# Esto es solo si te aperece en localhost apache2
 ```
 
 ```sh
