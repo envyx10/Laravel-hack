@@ -152,9 +152,17 @@ http://localhost y se tendrá que ver algo así:
 
 ![laravelHow](https://github.com/user-attachments/assets/2e8dd0fe-d081-4c7d-84d8-d80055450936)
 
+En caso de que no se vea como arriba y se vea asi:
+
+![image](https://github.com/user-attachments/assets/d9d08e6e-5277-4c4b-a289-0a9534a69713)
+
+Se arregla modificando los valores de .env que se especifican algo mas abajo de los apuntes. 
+
 
 ```sh
-# En caso de que no se vea así, habrá que parar Apache2 mediante systemctl stop apache2
+# En caso de que no se vea así, habrá que parar Apache2 mediante
+systemctl stop apache2
+# Esto es solo si te aperece en localhost apache2
 ```
 
 ```sh
