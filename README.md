@@ -16,6 +16,7 @@ Pasos a seguir en orden.
 10. [Relaciones](#relaciones)
 11. [Modelos](#modelos)
 12. [Métodos modelos](#métodos-modelos)
+13. [Enrutamiento en Laravel 11](#enrutamiento-en-laravel-11)
 
 ## WSL
 
@@ -649,3 +650,215 @@ $user->roles()->attach($roleId);
 # detach(): Desasocia un modelo de otro en una relación de muchos a muchos.
 $user->roles()->detach($roleId);
 ```
+
+## Enrutamiento en Laravel 11
+
+En este documento se explica cómo funcionan las rutas en Laravel 11, enfocándose en los métodos HTTP más comunes: GET, POST, PUT, DELETE y PATCH.
+
+### Concepto Básico del Routing en Laravel
+
+En Laravel, el enrutamiento se utiliza para definir qué acción debe tomar la aplicación cuando un usuario accede a una URL específica. Los enrutamientos se definen generalmente en los archivos ubicados dentro del directorio `routes/`. Para aplicaciones web, el archivo principal es `routes/web.php`.
+
+Cada ruta está asociada con un controlador o una función closure que maneja la lógica correspondiente.
+
+### Métodos HTTP en Laravel
+
+Laravel proporciona métodos específicos para cada verbo HTTP. A continuación, se explican cada uno:
+
+#### Ruta GET
+
+El método GET se utiliza para recuperar información de un recurso. Es el tipo de solicitud más común cuando visitas una página web.
+
+```php
+Route::get('/ruta', function () {
+    return 'Respuesta al hacer una solicitud GET';
+});
+```
+
+Ejemplo Práctico:
+
+```php
+Route::get('/saludo', function () {
+    return 'Hola, bienvenido a mi sitio';
+});
+```
+
+Si visitas la URL `/saludo` en tu navegador, verás el mensaje "Hola, bienvenido a mi sitio".
+
+#### Ruta POST
+
+El método POST se utiliza para enviar datos al servidor, típicamente desde formularios. Este método no debe ser accesible directamente desde la barra de direcciones del navegador.
+
+```php
+Route::post('/ruta', function () {
+    return 'Respuesta al hacer una solicitud POST';
+});
+```
+
+Ejemplo Práctico:
+
+```php
+Route::post('/enviar-formulario', function (Request $request) {
+    // Acceder a los datos enviados por el formulario
+    $nombre = $request->input('nombre');
+    return 'Formulario enviado correctamente. Nombre: ' . $nombre;
+});
+```
+
+Para probar esto, necesitarías un formulario HTML que envíe datos a esta ruta usando el método POST.
+
+#### Ruta PUT
+
+El método PUT se utiliza para actualizar un recurso existente. En general, se emplea en APIs RESTful.
+
+```php
+Route::put('/ruta/{id}', function ($id) {
+    return 'Actualizando el recurso con ID: ' . $id;
+});
+```
+
+Ejemplo Práctico:
+
+```php
+Route::put('/actualizar-usuario/{id}', function ($id) {
+    return 'Usuario con ID ' . $id . ' ha sido actualizado';
+});
+```
+
+Este tipo de ruta suele usarse en combinación con JavaScript o herramientas como Postman para realizar solicitudes.
+
+#### Ruta DELETE
+
+El método DELETE se utiliza para eliminar un recurso específico.
+
+```php
+Route::delete('/ruta/{id}', function ($id) {
+    return 'Recurso con ID: ' . $id . ' eliminado';
+});
+```
+
+Ejemplo Práctico:
+
+```php
+Route::delete('/eliminar-usuario/{id}', function ($id) {
+    return 'Usuario con ID ' . $id . ' ha sido eliminado';
+});
+```
+
+Al igual que con PUT, este método suele requerir una solicitud desde JavaScript o herramientas externas.
+
+#### Ruta PATCH
+
+El método PATCH también se usa para actualizar recursos, pero a diferencia de PUT, solo actualiza partes específicas del recurso en lugar de reemplazarlo completamente.
+
+```php
+Route::patch('/ruta/{id}', function ($id) {
+    return 'Recurso con ID: ' . $id . ' parcialmente actualizado';
+});
+```
+
+Ejemplo Práctico:
+
+```php
+Route::patch('/actualizar-perfil/{id}', function ($id, Request $request) {
+    $campo = $request->input('campo');
+    return 'Campo ' . $campo . ' del perfil con ID ' . $id . ' actualizado';
+});
+```
+
+### Parámetros en las Rutas
+
+Las rutas pueden incluir parámetros dinámicos que permiten trabajar con identificadores únicos o valores variables.
+
+#### Parámetros Obligatorios
+
+```php
+Route::get('/usuario/{id}', function ($id) {
+    return 'Mostrando usuario con ID: ' . $id;
+});
+```
+
+Aquí, `{id}` es un parámetro obligatorio.
+
+#### Parámetros Opcionales
+
+```php
+Route::get('/buscar/{termino?}', function ($termino = null) {
+    if ($termino) {
+        return 'Buscando: ' . $termino;
+    } else {
+        return 'No se proporcionó ningún término de búsqueda';
+    }
+});
+```
+
+El signo `?` indica que el parámetro es opcional.
+
+### Redirección de Rutas
+
+Puedes redirigir una ruta a otra usando el método `redirect()`.
+
+Ejemplo:
+
+```php
+Route::get('/antigua-ruta', function () {
+    return redirect('/nueva-ruta');
+});
+```
+
+### Rutas con Controladores
+
+En lugar de usar closures, puedes asignar rutas a métodos de un controlador.
+
+```php
+Route::get('/ruta', [Controlador::class, 'metodo']);
+```
+
+Ejemplo Práctico:
+
+```php
+use App\Http\Controllers\UsuarioController;
+
+Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::post('/usuarios', [UsuarioController::class, 'store']);
+Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
+```
+
+### Grupos de Rutas
+
+Los grupos de rutas permiten agrupar varias rutas bajo un prefijo o middleware común.
+
+#### Ejemplo con Prefijo
+
+```php
+Route::prefix('admin')->group(function () {
+    Route::get('/usuarios', function () {
+        return 'Lista de usuarios administrativos';
+    });
+
+    Route::get('/configuracion', function () {
+        return 'Configuración del panel de administración';
+    });
+});
+```
+
+#### Ejemplo con Middleware
+
+```php
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return 'Panel de control (requiere autenticación)';
+    });
+});
+```
+
+### Resumen de Métodos HTTP
+
+| Método  | Acción                      | Ejemplo Práctico                |
+|---------|-----------------------------|---------------------------------|
+| GET     | Recuperar datos             | Mostrar lista de usuarios       |
+| POST    | Crear un nuevo recurso      | Guardar datos de un formulario  |
+| PUT     | Actualizar un recurso completo | Actualizar perfil de usuario |
+| PATCH   | Actualizar partes de un recurso | Cambiar correo electrónico  |
+| DELETE  | Eliminar un recurso         | Eliminar usuario                |
